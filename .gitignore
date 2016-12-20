@@ -41,3 +41,6 @@ jspm_packages
 
 # Default Torrents Destination
 torrents
+
+# Development Config
+config/development.json
