@@ -1,0 +1,19 @@
+{
+  "frequency" : {
+	"unit" : "hours",
+	"value" : "*/2",
+	"cron_pattern" : ""
+  },
+  "query" : {
+	"mpa_ratings" : ["G", "PG", "PG-13"],
+	"minimum_rating" : 5,
+	"genre" : "",
+	"quality" : "1080p"
+  },
+  "baseurl" : "https://yts.ag/api/v2",
+  "destination" : "/Users/danwilson/Downloads/tmp",
+  "run_at_start" : true,
+  "log_level" : "trace",
+  "cache_ttl" : 2592000,
+  "since" : 1482032238
+}
