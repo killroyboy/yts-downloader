@@ -2,8 +2,8 @@
  * YTS-downloader
  * Download recently released torrent files from yts.ag based on criteria specified
  *
- * @licence ISC
- * @copyright 2016, Dan Wilson [dan@codeality.com]
+ * @license MIT
+ * @copyright 2016, Dan Wilson [killroyboy@gmail.com]
  */
 
 var cron = require('cron').CronJob,
