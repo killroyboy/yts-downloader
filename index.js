@@ -19,7 +19,7 @@ var cron = require('cron').CronJob,
         useLevelPrefixes: true,
         level : config.log_level
     }),
-    downloaded = 0, checked = 0;
+    downloaded = 0, total = 0;
 
 // compile a manual pattern
 if (!pattern) {
@@ -94,28 +94,39 @@ var handleResponse = function (body) {
         movies = response.data.movies,
         last = cache.getKey('last_uploaded') || config.since;
 
+    // reset current run count
+    downloaded = 0;
+
+    // loop through all the movies and download if it's new
     _.each(movies, function (movie) {
         if (!cache.getKey(movie.id)) {
             logger.debug('Examining', movie.title_long);
+
+            // are we filtering by mpa rating?
             if (config.query.mpa_ratings.length) {
-                logger.debug('Checking MPA Ratings:', movie.mpa_rating);
                 if (config.query.mpa_ratings.indexOf(movie.mpa_rating) > -1) {
                     downloadFile(movie.torrents[0].url, movie.title);
+                } else {
+                    logger.debug('Ignoring Because of MPA Rating:', movie.mpa_rating);
                 }
             } else {
                 downloadFile(movie.torrents[0].url, movie.title);
             }
             cache.setKey(movie.id, true);
 
+            // cache the latest uploaded date
             if (movie.date_uploaded_unix > last) {
-                cache.setKey('last_uploaded', movie.date_uploaded_unix);
+                last = movie.date_uploaded_unix;
             }
         }
     });
+    cache.setKey('last_uploaded', last);
     cache.save();
+    total += downloaded;
 
     logger.info('Movies:', movies.length);
     logger.info('Downloaded:', downloaded);
+    logger.info('Total:', total);
 };
 
 logger.trace('Cron Pattern:', pattern);
@@ -129,6 +140,6 @@ var job = new cron({
         logger.info('yts-downloader', moment().toString());
         requestRecentMovies(handleResponse);
     },
-    start : config.get('run_at_start')
+    runOnInit : config.run_at_start,
+    start : true
 });
-job.start();
