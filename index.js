@@ -43,6 +43,12 @@ if (!pattern) {
     pattern = patternParts.join(' ');
 }
 
+// create the directory if it doesn't exist
+if (!fs.existsSync(config.destination)) {
+    logger.info('Creating destination directory', config.destination);
+    fs.mkdirSync(config.destination);
+}
+
 /**
  * Request the recent movies from the base URL (yts.ag)
  * @param callback

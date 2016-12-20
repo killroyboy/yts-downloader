@@ -11,7 +11,7 @@
 	"quality" : "1080p"
   },
   "baseurl" : "https://yts.ag/api/v2",
-  "destination" : "/Users/danwilson/Downloads/tmp",
+  "destination" : "./torrents",
   "run_at_start" : true,
   "log_level" : "trace",
   "cache_ttl" : 2592000,
