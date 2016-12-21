@@ -94,6 +94,7 @@ var downloadFile = function (torrents, movie) {
                 responded++; // track how many we get back
                 logger.error('Error Downloading', movie.title, error.toString());
             }).on('response', (response) => {
+                logger.trace('Setting cache key for', movie.id, movie.title);
                 cache.setKey(movie.id, true);
                 responded++; // track how many we get back
                 downloaded++;
@@ -117,6 +118,7 @@ var handleResponse = function (body) {
 
     // loop through all the movies and download if it's new
     _.each(movies, function (movie) {
+        logger.trace('Checking cache key', movie.id, movie.title);
         if (!cache.getKey(movie.id)) {
             logger.debug('Examining', movie.title_long);
 
@@ -139,7 +141,6 @@ var handleResponse = function (body) {
         }
     });
     cache.setKey('last_uploaded', last);
-    cache.save();
 
     var final = setInterval(function () {
         if (responded === requested) {
@@ -148,6 +149,7 @@ var handleResponse = function (body) {
             logger.info('Movies:', movies.length);
             logger.info('Downloaded:', downloaded);
             logger.info('Total:', total);
+            cache.save();
         }
     }, 200);
 };
