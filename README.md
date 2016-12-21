@@ -22,12 +22,6 @@ Configuration
 ---------------
 This is the default configuration. You can easily customize and override any setting by copying the `config/default.json` file to `config/development.json` and then change any settings you desire.
 
-Notes: 
-- `cron_pattern` overrides frequency unit/value. 
-- leave `mpa_ratings` as empty array ([]) to retrieve all
-- `log_level` can be 'error', 'warn', 'info', 'debug'
-- `since` is not currently supported.
-
 ```js
 {
   "frequency" : {
@@ -49,6 +43,11 @@ Notes:
   "since" : 1482032238
 }
 ```
+Notes: 
+- `cron_pattern` overrides frequency unit/value. 
+- leave `mpa_ratings` as empty array ([]) to retrieve all
+- `log_level` can be 'error', 'warn', 'info', 'debug'
+- `since` is not currently supported.
 
 Author
 ---------------
