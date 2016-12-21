@@ -7,16 +7,26 @@ yts-downloader is an open source project providing automatic downloading of torr
 Requirements
 ---------------
 - Node 6.x
-- NPM
+- NPM 3.x
 
-Download
+Features
 ---------------
+- [x] Set frequency of fetching downloads
+- [x] Cache when it already examined a movie, so it doesn't try to redownload
+- [x] Filter by genre
+- [x] Filter by MPA rating
+- [x] Filter by quality (1080p, 720p, 3D)
+- [x] Filter by Rotten Tomotos rating
 
 Configuration
 ---------------
 This is the default configuration. You can easily customize and override any setting by copying the `config/default.json` file to `config/development.json` and then change any settings you desire.
 
-Note: `cron_pattern` overrides frequency unit/value. `since` is not currently supported.
+Notes: 
+- `cron_pattern` overrides frequency unit/value. 
+- leave `mpa_ratings` as empty array ([]) to retrieve all
+- `log_level` can be 'error', 'warn', 'info', 'debug'
+- `since` is not currently supported.
 
 ```js
 {
@@ -39,13 +49,6 @@ Note: `cron_pattern` overrides frequency unit/value. `since` is not currently su
   "since" : 1482032238
 }
 ```
-
-Features
----------------
-- [x] Filter by genre
-- [x] Filter by MPA rating
-- [x] Filter by quality (1080p, 720p, 3D)
-- [x] Filter by Rotten Tomotos rating
 
 Author
 ---------------
