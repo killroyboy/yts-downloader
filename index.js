@@ -142,6 +142,7 @@ var handleResponse = function (body) {
             }
 
             if (matchCriteria) {
+                logger.info('Downloading', movie.title_long);
                 downloadFile(movie);
             }
 
