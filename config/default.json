@@ -5,10 +5,13 @@
 	"cron_pattern" : ""
   },
   "query" : {
-	"mpa_ratings" : ["G", "PG", "PG-13"],
 	"minimum_rating" : 5,
 	"genre" : "",
 	"quality" : "1080p"
+  },
+  "filter" : {
+	"mpa_ratings" : ["G", "PG", "PG-13"],
+	"minimum_year" : ""
   },
   "baseurl" : "https://yts.ag/api/v2",
   "destination" : "./torrents",

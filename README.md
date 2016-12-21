@@ -14,9 +14,10 @@ Features
 - [x] Set frequency of fetching downloads
 - [x] Cache when it already examined a movie, so it doesn't try to redownload
 - [x] Filter by genre
-- [x] Filter by MPA rating
 - [x] Filter by quality (1080p, 720p, 3D)
-- [x] Filter by Rotten Tomotos rating
+- [x] Filter by Rotten Tomatoes rating
+- [x] Filter by MPA rating
+- [x] Filter by minimum year
 
 Configuration
 ---------------
@@ -30,10 +31,13 @@ This is the default configuration. You can easily customize and override any set
 	"cron_pattern" : ""
   },
   "query" : {
-	"mpa_ratings" : ["G", "PG", "PG-13"],
 	"minimum_rating" : 5,
 	"genre" : "",
 	"quality" : "1080p"
+  },
+  "filter" : {
+	"mpa_ratings" : ["G", "PG", "PG-13"],
+	"minimum_year" : ""
   },
   "baseurl" : "https://yts.ag/api/v2",
   "destination" : "./torrents",

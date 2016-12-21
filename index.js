@@ -83,10 +83,10 @@ var requestRecentMovies = function (callback) {
  * @param torrents
  * @param movie
  */
-var downloadFile = function (torrents, movie) {
+var downloadFile = function (movie) {
     requested++; // track how many downloads we request
     var localFile = config.destination + '/' + movie.title + '.torrent';
-    _.each(torrents, function (torrent) {
+    _.each(movie.torrents, function (torrent) {
         logger.trace('Checking for quality', torrent.quality, config.query.quality);
         if (torrent.quality === config.query.quality) {
             logger.debug('Downloading Torrent', movie.title, torrent.url, localFile);
@@ -111,6 +111,7 @@ var downloadFile = function (torrents, movie) {
 var handleResponse = function (body) {
     var response = JSON.parse(body),
         movies = response.data.movies,
+        matchCriteria = true,
         last = cache.getKey('last_uploaded') || config.since;
 
     // reset current run count
@@ -118,20 +119,30 @@ var handleResponse = function (body) {
 
     // loop through all the movies and download if it's new
     _.each(movies, function (movie) {
+        matchCriteria = true;
         logger.trace('Checking cache key', movie.id, movie.title);
         if (!cache.getKey(movie.id)) {
             logger.debug('Examining', movie.title_long);
 
-            // are we filtering by mpa rating?
-            if (config.query.mpa_ratings.length) {
-                if (config.query.mpa_ratings.indexOf(movie.mpa_rating) > -1) {
-                    downloadFile(movie.torrents, movie);
-                } else {
+            if (config.filter.mpa_ratings.length) {
+                if (config.filter.mpa_ratings.indexOf(movie.mpa_rating) < 0) {
                     logger.debug('Ignoring', movie.title, 'because MPA Rating:', movie.mpa_rating);
                     cache.setKey(movie.id, true);
+                    matchCriteria = false;
                 }
-            } else {
-                downloadFile(movie.torrents, movie);
+            }
+
+            // only check this if we are still planning to download
+            if (matchCriteria && config.filter.minimum_year) {
+                if (parseInt(movie.year) < parseInt(config.filter.minimum_year)) {
+                    logger.debug('Ignoring', movie.title, 'because year:', movie.year);
+                    cache.setKey(movie.id, true);
+                    matchCriteria = false;
+                }
+            }
+
+            if (matchCriteria) {
+                downloadFile(movie);
             }
 
             // cache the latest uploaded date
