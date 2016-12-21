@@ -19,7 +19,7 @@ var cron = require('cron').CronJob,
         useLevelPrefixes: true,
         level : config.log_level
     }),
-    downloaded = 0, total = 0;
+    downloaded = 0, total = 0, responded = 0, requested = 0;
 
 // compile a manual pattern
 if (!pattern) {
@@ -80,14 +80,26 @@ var requestRecentMovies = function (callback) {
 
 /**
  * Download the torrent file and save it to the destination directory
- * @param url
- * @param title
+ * @param torrents
+ * @param movie
  */
-var downloadFile = function (url, title) {
-    var localFile = config.destination + '/' + title + '.torrent';
-    logger.debug('Downloading Torrent', title, url, localFile);
-    got.stream(url).pipe(fs.createWriteStream(localFile));
-    downloaded++;
+var downloadFile = function (torrents, movie) {
+    requested++; // track how many downloads we request
+    var localFile = config.destination + '/' + movie.title + '.torrent';
+    _.each(torrents, function (torrent) {
+        logger.trace('Checking for quality', torrent.quality, config.query.quality);
+        if (torrent.quality === config.query.quality) {
+            logger.debug('Downloading Torrent', movie.title, torrent.url, localFile);
+            got.stream(torrent.url).on('error', (error) => {
+                responded++; // track how many we get back
+                logger.error('Error Downloading', movie.title, error.toString());
+            }).on('response', (response) => {
+                cache.setKey(movie.id, true);
+                responded++; // track how many we get back
+                downloaded++;
+            }).pipe(fs.createWriteStream(localFile));
+        }
+    });
 };
 
 /**
@@ -111,14 +123,14 @@ var handleResponse = function (body) {
             // are we filtering by mpa rating?
             if (config.query.mpa_ratings.length) {
                 if (config.query.mpa_ratings.indexOf(movie.mpa_rating) > -1) {
-                    downloadFile(movie.torrents[0].url, movie.title);
+                    downloadFile(movie.torrents, movie);
                 } else {
-                    logger.debug('Ignoring Because of MPA Rating:', movie.mpa_rating);
+                    logger.debug('Ignoring', movie.title, 'because MPA Rating:', movie.mpa_rating);
+                    cache.setKey(movie.id, true);
                 }
             } else {
-                downloadFile(movie.torrents[0].url, movie.title);
+                downloadFile(movie.torrents, movie);
             }
-            cache.setKey(movie.id, true);
 
             // cache the latest uploaded date
             if (movie.date_uploaded_unix > last) {
@@ -128,11 +140,16 @@ var handleResponse = function (body) {
     });
     cache.setKey('last_uploaded', last);
     cache.save();
-    total += downloaded;
 
-    logger.info('Movies:', movies.length);
-    logger.info('Downloaded:', downloaded);
-    logger.info('Total:', total);
+    var final = setInterval(function () {
+        if (responded === requested) {
+            clearInterval(final);
+            total += downloaded;
+            logger.info('Movies:', movies.length);
+            logger.info('Downloaded:', downloaded);
+            logger.info('Total:', total);
+        }
+    }, 200);
 };
 
 logger.trace('Cron Pattern:', pattern);
