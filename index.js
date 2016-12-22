@@ -112,6 +112,7 @@ var handleResponse = function (body) {
     var response = JSON.parse(body),
         movies = response.data.movies,
         matchCriteria = true,
+        checked = 0,
         last = cache.getKey('last_uploaded') || config.since;
 
     // reset current run count
@@ -155,7 +156,8 @@ var handleResponse = function (body) {
     cache.setKey('last_uploaded', last);
 
     var final = setInterval(function () {
-        if (responded === requested) {
+        logger.trace('Checking if done', requested, responded);
+        if (responded === requested || ++checked > (movies.length * 2)) {
             clearInterval(final);
             total += downloaded;
             logger.info('Movies:', movies.length);
