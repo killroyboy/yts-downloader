@@ -26,8 +26,13 @@ To use *yts-downloader*, you must first install [NodeJS](https://nodejs.org/en/d
 Customize the configuration by copying the `config/default.json` file to `config/development.json` and then editing your settings. If you edit default.json directly, it is likely that future versions of *yts-downloder* will overwrite your customizations.
 
 Open a command line window (`terminal` on MacOS or follow [these instructions](https://www.lifewire.com/command-prompt-2625840) for Windows) and issue the following commands within the yts-downloader directory:
-- npm install
-- node index.js
+
+```js
+npm install
+```
+```js
+node index.js
+```
 
 The first command will install all the prerequisits and the second starts *yts-downloader*. You will need to keep this window and process running in order to allow it to continue to retrieve torrent files. There are tools available (like [forever](https://www.npmjs.com/package/forever)) to ensure the process runs in the background.
 
