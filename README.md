@@ -29,7 +29,7 @@ Open a command line window (`terminal` on MacOS or follow [these instructions](h
 - npm install
 - node index.js
 
-The first command will install all the prerequisits and the second stars *yts-downloader*. You will need to keep this window and process running in order to allow it to continue to retrieve torrent files. There are tools available (like [forever](https://www.npmjs.com/package/forever)) to ensure the process runs in the background.
+The first command will install all the prerequisits and the second starts *yts-downloader*. You will need to keep this window and process running in order to allow it to continue to retrieve torrent files. There are tools available (like [forever](https://www.npmjs.com/package/forever)) to ensure the process runs in the background.
 
 
 Configuration
