@@ -44,3 +44,6 @@ torrents
 
 # Development Config
 config/development.json
+
+# Cache file
+cache/yts-downloader

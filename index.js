@@ -13,13 +13,14 @@ var cron = require('cron').CronJob,
     moment = require('moment'),
     pattern = config.frequency.cron_pattern,
     fs = require('fs'),
+    path = require('path'),
     flatCache = require('flat-cache'),
-    cache = flatCache.load('yts-downloader'),
+    cache = flatCache.load('yts-downloader', path.resolve('./cache')),
     logger = require('eazy-logger').Logger({
         useLevelPrefixes: true,
         level : config.log_level
     }),
-    downloaded = 0, total = 0, responded = 0, requested = 0;
+    downloaded = 0, total = parseInt(cache.getKey('total-downloaded')) || 0, responded = 0, requested = 0;
 
 // compile a manual pattern
 if (!pattern) {
@@ -160,6 +161,7 @@ var handleResponse = function (body) {
         if (responded === requested || ++checked > (movies.length * 2)) {
             clearInterval(final);
             total += downloaded;
+            cache.setKey('total-downloaded', total); 
             logger.info('Movies:', movies.length);
             logger.info('Downloaded:', downloaded);
             logger.info('Total:', total);
