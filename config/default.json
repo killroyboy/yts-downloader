@@ -15,6 +15,8 @@
   },
   "baseurl" : "https://yts.ag/api/v2",
   "destination" : "./torrents",
+  "script_before" : false,
+  "always_log_results" : true,
   "run_at_start" : true,
   "log_level" : "info",
   "cache_ttl" : 2592000,
