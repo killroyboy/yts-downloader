@@ -13,6 +13,7 @@
 	"mpa_ratings" : ["G", "PG", "PG-13"],
 	"minimum_year" : ""
   },
+  "tod_restriction" : false,
   "baseurl" : "https://yts.ag/api/v2",
   "destination" : "./torrents",
   "run_at_start" : true,

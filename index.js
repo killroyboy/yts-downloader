@@ -91,6 +91,11 @@ var downloadFile = function (movie) {
         logger.trace('Checking for quality', torrent.quality, config.query.quality);
         if (torrent.quality === config.query.quality) {
             logger.debug('Downloading Torrent', movie.title, torrent.url, localFile);
+            // if pre-download script, run it 
+            if (config.pre_download_script) {
+                //exec(config.pre_download_script); 
+            } 
+ 
             got.stream(torrent.url).on('error', (error) => {
                 responded++; // track how many we get back
                 logger.error('Error Downloading', movie.title, error.toString());
