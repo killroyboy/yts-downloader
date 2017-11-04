@@ -119,6 +119,7 @@ var handleResponse = function (body) {
         movies = response.data.movies,
         matchCriteria = true,
         checked = 0,
+        printer = null,
         last = cache.getKey('last_uploaded') || config.since;
 
     // reset current run count
@@ -150,6 +151,14 @@ var handleResponse = function (body) {
 
             if (matchCriteria) {
                 logger.info('Downloading', movie.title_long);
+                if (config.script_before) {
+					const { execFile } = require('child_process');
+					const child = execFile('node', ['--version'], (error, stdout, stderr) => {
+						if (error) {
+							throw error;
+						}
+					});
+                }
                 downloadFile(movie);
             }
 
@@ -162,14 +171,14 @@ var handleResponse = function (body) {
     cache.setKey('last_uploaded', last);
 
     var final = setInterval(function () {
-        logger.trace('Checking if done', requested, responded);
         if (responded === requested || ++checked > (movies.length * 2)) {
             clearInterval(final);
             total += downloaded;
-            cache.setKey('total-downloaded', total); 
-            logger.info('Movies:', movies.length);
-            logger.info('Downloaded:', downloaded);
-            logger.info('Total:', total);
+            cache.setKey('total-downloaded', total);
+            printer = config.always_log_results || downloaded > 0 ? logger.info : logger.debug;
+            printer('Movies:', movies.length);
+            printer('Downloaded:', downloaded);
+			printer('Total:', total);
             cache.save();
         }
     }, 200);
