@@ -116,7 +116,7 @@ var downloadFile = function (movie) {
  */
 var handleResponse = function (body) {
     var response = JSON.parse(body),
-        movies = response.data.movies,
+        movies = response.data.movies || [],
         matchCriteria = true,
         checked = 0,
         printer = null,
