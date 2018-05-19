@@ -16,6 +16,7 @@ var cron = require('cron').CronJob,
     path = require('path'),
     flatCache = require('flat-cache'),
     cache = flatCache.load('yts-downloader', path.resolve('./cache')),
+    execFile = require('child_process'),
     logger = require('eazy-logger').Logger({
         useLevelPrefixes: true,
         level : config.log_level
@@ -152,8 +153,7 @@ var handleResponse = function (body) {
             if (matchCriteria) {
                 logger.info('Downloading', movie.title_long);
                 if (config.script_before) {
-					const { execFile } = require('child_process');
-					const child = execFile('node', ['--version'], (error, stdout, stderr) => {
+					execFile(config.script_before, [], (error, stdout, stderr) => {
 						if (error) {
 							throw error;
 						}
